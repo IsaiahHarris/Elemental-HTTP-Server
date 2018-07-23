@@ -1,6 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const { parse } = require('querystring');
+
 //404 response
 
 function send404(response) {
@@ -16,7 +17,7 @@ http.createServer((request, response) => {
   let url = request.url;
   if (request.method === 'GET') {
 
-    if (!fs.existsSync('./public/'+url)) {
+    if (!stats.isFile('./public/'+url)) {
       response.writeHead(404,{ 'Content-Type': 'text/html' });
       fs.createReadStream('./public/404.html').pipe(response);
     } else {
@@ -47,14 +48,13 @@ http.createServer((request, response) => {
           if(err){
             console.log('error');
           }else {
-            
           }
         })
         fs.writeFile('./public/' + fileName, datas, (err)=>{
           if(err){
             console.log('error');
           }else {
-            response.writeHead(200, { 'Content-Type': 'application/json', 'Content-Body': '{ "success" : true }'});
+            response.writeHead(200, { 'Content-Type': 'application/json', 'Content-Body': '{ "url" : true }'});
             response.end();
           }
         }); 
