@@ -17,34 +17,20 @@ http.createServer((request, response) => {
   let url = request.url;
   if (request.method === 'GET') {
 
-    fs.stat('./public/' + url, function (err, stat) {
-      if (err === null) {
-        response.writeHead(200, { 'Content-Type': 'text/html' });
-        fs.readFile(`./public` + url, (err, data) => {
-          if (err) {
-            console.log('error');
-          } else {
-            response.write(data.toString().trim())
-            response.end(() => {
-              console.log('request fulfilled');
-            });
-          }
-        })
-      } else if (err.code === 'ENOENT') {
-        response.writeHead(200, { 'Content-Type': 'text/html' });
-        fs.readFile(`./public` + url, (err, data) => {
-          if (err) {
-            console.log('error');
-          } else {
-            response.write(data.toString().trim())
-            response.end((() => {
-              console.log('request fulfilled');
-            }));
-          }
+    fs.readFile('./public/' + url, function (err, stat) {
+      if (err) {
+        fs.readFile('./public/404.html', 'utf8', (err, data) => {
+          response.write(data);
+          response.end();
         })
       } else {
-        response.writeHead(404, { 'Content-Type': 'text/html' });
-        fs.createReadStream('./public/404.html').pipe(response);
+        response.writeHead(200, { 'Content-Type': 'text/html' });
+        fs.readFile(`./public` + url, (err, data) => {
+          response.write(data.toString().trim())
+          response.end((() => {
+            console.log('request fulfilled');
+          }));
+        })
       }
     });
 
@@ -77,20 +63,20 @@ http.createServer((request, response) => {
           response.end();
         }
       });
-      fs.readFile('./public/index.html', (err, data)=>{
-        if (err){
+      fs.readFile('./public/index.html', (err, data) => {
+        if (err) {
           console.log(err);
-        }else {
-         let indexFile =  data.toString().split("\n");
-          indexFile.splice(indexFile.length-5, 0,`
+        } else {
+          let indexFile = data.toString().split("\n");
+          indexFile.splice(indexFile.length - 5, 0, `
         <li>
           <a href="/${result.elName}.html">${result.elName}</a>
         </li>`);
           var text = indexFile.join("\n");
           fs.writeFile('./public/index.html', text, function (err) {
-            if (err){
+            if (err) {
               console.log(err);
-            } 
+            }
           });
         }
       })
