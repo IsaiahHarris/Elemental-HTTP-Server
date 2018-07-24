@@ -43,7 +43,7 @@ http.createServer((request, response) => {
           response.end();
         })
       } else {
-        response.writeHead(200, { 'Content-Type': 'text/html' });
+        response.writeHead(200, { 'Content-Type': `text/${url.substring(url.lastIndexOf('.')+1)}` });
         response.write(data.toString().trim())
         response.end((() => {
           console.log('request fulfilled');
