@@ -59,7 +59,7 @@ http.createServer((request, response) => {
         if (err) {
           console.log('error');
         } else {
-          response.writeHead(200, { 'Content-Type': 'application/json', 'Content-Body': '{ "url" : true }' });
+          response.writeHead(200, { 'Content-Type': 'application/json', 'Content-Body': '{ "success" : true }' });
           response.end();
         }
       });
@@ -68,7 +68,7 @@ http.createServer((request, response) => {
           console.log(err);
         } else {
           let indexFile = data.toString().split("\n");
-          indexFile.splice(indexFile.length - 5, 0, `
+          indexFile.splice(indexFile.length - 4, 0, `
         <li>
           <a href="/${result.elName}.html">${result.elName}</a>
         </li>`);
@@ -85,12 +85,48 @@ http.createServer((request, response) => {
   }else if (request.method === 'DELETE'){
     fs.unlink('public/'+ url, (err)=>{
       if(err){
-        console.log('error');
+        
+        response.end(url+ ' does not exist');
+      }else {
+        console.log(url + ' was deleted');
       }
-      console.log(url + ' was deleted');
+      
     })
+  }else if(request.method === 'PUT'){
+    collectRequestData(request, result => {
+    let findFileName = request.url;
+    let updateData = `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <title>The Elements - ${result.elTitle}</title>
+      <link rel="stylesheet" href="/css/styles.css">
+    </head>
+    <body>
+      <h1>${result.elName}</h1>
+      <h2>${result.symbol}</h2>
+      <h3>${result.atomicNum}</h3>
+      <p>${result.elDescription}</p>
+      <p><a href="/">back</a></p>
+    </body>
+    </html>`;
+    fs.readFile('./public/' + url, function (err, stat) {
+      if (err) {
+        response.writeHead(500, { 'Content-Type': 'application/json','Content-Body': `{ "error" : "resource /carbon.html does not exist" }` });
+        response.end();
+      } else {
+        response.writeHead(200, { 'Content-Type': 'text/html' });
+        fs.readFile(`./public` + url, (err, data) => {
+          response.write(data.toString().trim())
+          response.end((() => {
+            console.log('request fulfilled');
+          }));
+        })
+      }
+    });
+  });
   }
-
+  
 
 }).listen(6969, '0.0.0.0', () => {
   console.log('server is listening to port 6969');

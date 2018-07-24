@@ -74,7 +74,7 @@ If a resource path (url) does not exist, return a 404 response code and render t
 
 Each time a new resource is created (via POST), update the `index.html` file to reflect the newly created page.
 
-When `carbon.html` is been added to the `public/` directory, add a link to `carbon.html` in `public.html`.
+When `carbon.html` has been added to the `public/` directory, add a link to `carbon.html` in `public.html`.
 
 ## Initial Routing Table
 
