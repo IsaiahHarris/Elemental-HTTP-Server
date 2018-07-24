@@ -82,6 +82,13 @@ http.createServer((request, response) => {
       })
 
     });
+  }else if (request.method === 'DELETE'){
+    fs.unlink('public/'+ url, (err)=>{
+      if(err){
+        console.log('error');
+      }
+      console.log(url + ' was deleted');
+    })
   }
 
 
