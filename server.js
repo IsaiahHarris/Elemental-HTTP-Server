@@ -13,6 +13,9 @@ http.createServer((request, response) => {
     deleteFunc(request, response);
   } else if (request.method === 'PUT') {
     putFunc(request, response);
+  }else {
+    response.writeHead(405,{'Error': 'Method not allowed'});
+    response.end();
   }
   //functions 
 
@@ -35,15 +38,16 @@ http.createServer((request, response) => {
   }
 
   function getFunc() {
-
-    fs.readFile('./public/' + url, function (err, data) {
+    
+    let path = url ==='/'? '/index.html': url;
+    fs.readFile('./public' + path, (err, data) =>{
       if (err) {
         fs.readFile('./public/404.html', 'utf8', (err, data) => {
           response.write(data);
           response.end();
         })
       } else {
-        response.writeHead(200, { 'Content-Type': `text/${url.substring(url.lastIndexOf('.')+1)}` });
+        response.writeHead(200, { 'Content-Type': `text/${path.substring(path.lastIndexOf('.')+1)}`});
         response.write(data.toString().trim())
         response.end((() => {
           console.log('request fulfilled');
